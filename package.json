@@ -1,0 +1,17 @@
+{
+  "name": "carbon-api",
+  "version": "1.0.0",
+  "description": "a pseudo-api for the carbon screenshot service",
+  "main": "index.js",
+  "repository": "https://github.com/hvze/carbon-api",
+  "author": "haze <me@haze.sh>",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "puppeteer": "^1.1.1",
+    "rimraf": "^2.6.2",
+    "sleep": "^5.1.1",
+    "yargs": "^11.0.0"
+  }
+}
