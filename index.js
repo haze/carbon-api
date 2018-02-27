@@ -22,6 +22,7 @@ const argv =
 
 app.use(bp.json());
 
+
 const CARBON_THEME_SELECTOR = '.jsx-2015459824';
 const CARBON_DL_BUTTON_SELECTOR = 'button.jsx-3445587207:nth-child(2)';
 const CARBON_TEXT_SELECTOR = '.CodeMirror-code';
@@ -99,27 +100,23 @@ function delete_folder() {
 }
 
 
-function build_url_params(json) {
-    var buf = '?';
+function build_url_params(json, text, theme) {
+    var buf = `?code=${text}&t=${theme}`;
     let keys = Object.keys(json);
     let e_keys = Object.keys(param_map);
     for(var i = 0; i < keys.length; i++) {
         let key = keys[i];
         if (key in param_map) {
-            if(!(buf == "?"))
-                buf += "&";
-            buf += `${param_map[key].url}=${json[key]}`
+            buf += `&${param_map[key].url}=${json[key]}`
         }
     }
     for(var i = 0; i < e_keys.length; i++) {
         let key = e_keys[i];
         if  (key in keys) {
-           if(!(buf == "?"))
-                buf += "&";
-            buf += `${param_map[key].url}=${param_map[key].value}`
+            buf += `&${param_map[key].url}=${param_map[key].value}`
         }
     }
-    return buf;
+    return encodeURI(buf);
 }
 
 
@@ -151,14 +148,14 @@ function add_param(json_name, url_name, value) {
 
 add_default_params();
 
-
 function download_image(json) {
     let text = json.text;
+    let theme = json.theme;
     let hash = hash_current();
     let anchor_path = path.join(argv.path, hash);
     return new Promise((res, rej) => {
         (async () => {
-            let browser = await pup.launch();
+            let browser = await pup.launch({headless: false});
             let page = await browser.newPage();
             create_folder(anchor_path)
             await page._client.send('Page.setDownloadBehavior', {
@@ -166,17 +163,15 @@ function download_image(json) {
                 downloadPath: anchor_path
             })
         
-            let built_url = `https://carbon.now.sh/${build_url_params(json)}`
-            
-            await page.goto("https://carbon.now.sh/");
-            await page.click(CARBON_TEXT_SELECTOR);
-            await clear_text_element(page);
-            await page.keyboard.type(text);
+            let built_url = `https://carbon.now.sh/${build_url_params(json, text, theme)}`
+            await page.goto(built_url);
+            await sleep.sleep(2);
             await page.click(CARBON_DL_BUTTON_SELECTOR);
             while (!fs.existsSync(path.join(anchor_path, 'carbon.png'))) {
                 sleep.sleep(1);
             }
             await page.close();
+            await browser.close();
             res(anchor_path);
         })();
     });
