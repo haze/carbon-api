@@ -6,8 +6,7 @@ const bp = require('body-parser')
 const express = require('express')
 const app = express()
 const pup = require('puppeteer')
-const argv =
-    require('yargs')
+const argv = require('yargs')
         .command('serve [path] [port]', 'start the server', (yargs) => {
             yargs.positional('port', {
                 describe: 'port to bind',
@@ -18,10 +17,8 @@ const argv =
                 default: './'
             });
         }).argv;
-// add download command sometime later?
 
 app.use(bp.json());
-
 
 const CARBON_THEME_SELECTOR = '.jsx-2015459824';
 const CARBON_DL_BUTTON_SELECTOR = 'button.jsx-3445587207:nth-child(2)';
@@ -36,7 +33,7 @@ function error_json(why) {
     };
 }
 
-// Thanks, (Thinker..?)
+// Return the difference in-between two arrays
 function arr_diff(a1, a2) {
 
     var a = [], diff = [];
@@ -64,7 +61,6 @@ function hash_current() {
     return Buffer.from(Date.now().toString()).toString('base64');
 }
 
-
 // Thanks, slavafomin (I'm very lazy.)
 function contains_all(superset, subset) {
     if (0 === subset.length) {
@@ -76,9 +72,8 @@ function contains_all(superset, subset) {
 }
 
 app.get('/', (req, resp) => {
-    resp.send('hi. haze (haze.sh) owns this website.');
+    resp.send('hi. haze (haz.ee) owns this website.');
 });
-
 
 async function clear_text_element(page) {
     await page.keyboard.down('Meta');
@@ -98,7 +93,6 @@ function delete_folder() {
         fs.unlink(name);
     }
 }
-
 
 function build_url_params(json, text, theme) {
     var buf = `?code=${text}&t=${theme}`;
@@ -120,7 +114,7 @@ function build_url_params(json, text, theme) {
 }
 
 
-// work on later
+// TODO: add puppets for these attributes
 // 	"drop_shadow_y_offset": 5, [needs puppet]
 // 	"drop_shadow_blur_radius": 5, [needs puppet]
 // 	"window_theme": 1, [needs puppet]
